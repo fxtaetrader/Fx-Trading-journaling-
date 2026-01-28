@@ -170,10 +170,13 @@
                     </div>
                 </div>
 
-                <!-- Account Balance Manager -->
+             <!-- Account Balance Manager -->
                 <div class="balance-manager-card">
                     <div class="section-header">
                         <h3><i class="fas fa-wallet"></i> Account Balance Manager</h3>
+                        <button class="btn-secondary" onclick="updateBalance()">
+                            <i class="fas fa-sync-alt"></i> Update Balance
+                        </button>
                     </div>
                     
                     <div class="balance-form">
@@ -181,9 +184,9 @@
                             <label><i class="fas fa-dollar-sign"></i> Current Balance ($)</label>
                             <div class="input-with-icon">
                                 <span class="input-icon">$</span>
-                                <input type="number" id="currentBalanceInput" class="form-input" placeholder="Enter current balance" readonly>
+                                <input type="number" id="currentBalanceInput" class="form-input" placeholder="Enter current balance">
                             </div>
-                            <p class="balance-note">Auto-updated from trades</p>
+                            <p class="balance-note">Update your account balance to track growth accurately</p>
                         </div>
                         
                         <div class="balance-stats">
@@ -195,7 +198,7 @@
                                     </button>
                                 </div>
                                 <div class="balance-stat-content">
-                                    <span class="stat-value" id="startingBalance">$10,000.00</span>
+                                    <span class="stat-value" id="startingBalance">$0.0</span>
                                     <input type="number" id="startingBalanceInput" class="edit-input" style="display: none;" placeholder="Enter new starting balance" step="0.01" min="0">
                                 </div>
                                 <div class="edit-buttons">
@@ -209,15 +212,16 @@
                             </div>
                             <div class="balance-stat">
                                 <span class="stat-label">Total Growth</span>
-                                <span class="stat-value" id="totalGrowth">$0.00</span>
+                                <span class="stat-value profit" id="totalGrowth">+$5,420.50</span>
                             </div>
                             <div class="balance-stat">
                                 <span class="stat-label">Growth %</span>
-                                <span class="stat-value" id="growthPercentage">0%</span>
+                                <span class="stat-value profit" id="growthPercentage">+54.2%</span>
                             </div>
                         </div>
                     </div>
                 </div>
+
 
                 <!-- Charts -->
                 <div class="charts-container">
