@@ -1434,14 +1434,12 @@ function editStartingBalance() {
     const saveButton = document.getElementById('saveBalanceBtn');
     const cancelButton = document.getElementById('cancelBalanceBtn');
     
-    if (!startingBalanceElement || !startingBalanceInput) return;
-    
     // Hide edit button, show input and action buttons
-    if (editButton) editButton.style.display = 'none';
+    editButton.style.display = 'none';
     startingBalanceElement.style.display = 'none';
     startingBalanceInput.style.display = 'block';
-    if (saveButton) saveButton.style.display = 'flex';
-    if (cancelButton) cancelButton.style.display = 'flex';
+    saveButton.style.display = 'flex';
+    cancelButton.style.display = 'flex';
     
     // Set input value to current starting balance
     startingBalanceInput.value = startingBalance;
@@ -1470,50 +1468,34 @@ function saveStartingBalance() {
     }
     
     if (newStartingBalance === startingBalance) {
-        // No change, just hide edit mode
         hideEditMode();
         return;
     }
     
-    try {
-        // Update starting balance
-        startingBalance = newStartingBalance;
-        
-        // Save to localStorage
-        saveAccountBalance();
-        
-        // Update display
-        updateAccountBalanceDisplay();
-        
-        // Update charts
-        if (equityChart) {
-            equityChart.data = getEquityData();
-            equityChart.update();
-        }
-        
-        // Show success message
-        showToast(`Starting balance updated to ${formatCurrency(startingBalance)}`, 'success');
-        
-        // Hide edit mode
-        hideEditMode();
-    } catch (error) {
-        console.error('Error saving starting balance:', error);
-        showToast('Error updating starting balance', 'error');
+    // Update starting balance
+    startingBalance = newStartingBalance;
+    
+    // Save to localStorage
+    saveAccountBalance();
+    
+    // Update display
+    updateAccountBalanceDisplay();
+    
+    // Update charts
+    if (equityChart) {
+        equityChart.data = getEquityData();
+        equityChart.update();
     }
+    
+    // Show success message
+    showToast(`Starting balance updated to ${formatCurrency(startingBalance)}`, 'success');
+    
+    // Hide edit mode
+    hideEditMode();
 }
 
 // Cancel starting balance edit
 function cancelStartingBalanceEdit() {
-    const startingBalanceInput = document.getElementById('startingBalanceInput');
-    const startingBalanceElement = document.getElementById('startingBalance');
-    const editButton = document.querySelector('.edit-starting-balance-btn');
-    const saveButton = document.getElementById('saveBalanceBtn');
-    const cancelButton = document.getElementById('cancelBalanceBtn');
-    
-    // Reset input value
-    if (startingBalanceInput) startingBalanceInput.value = startingBalance;
-    
-    // Hide edit mode
     hideEditMode();
 }
 
@@ -1525,12 +1507,13 @@ function hideEditMode() {
     const saveButton = document.getElementById('saveBalanceBtn');
     const cancelButton = document.getElementById('cancelBalanceBtn');
     
-    if (editButton) editButton.style.display = 'flex';
-    if (startingBalanceElement) startingBalanceElement.style.display = 'block';
-    if (startingBalanceInput) startingBalanceInput.style.display = 'none';
-    if (saveButton) saveButton.style.display = 'none';
-    if (cancelButton) cancelButton.style.display = 'none';
+    editButton.style.display = 'flex';
+    startingBalanceElement.style.display = 'block';
+    startingBalanceInput.style.display = 'none';
+    saveButton.style.display = 'none';
+    cancelButton.style.display = 'none';
 }
+
 
 // Open edit balance modal
 function openEditBalanceModal() {
