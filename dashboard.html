@@ -1,0 +1,2597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FX TAE Trading Dashboard | Professional Trading Journal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loader" id="loader">
+        <div class="loader-content">
+            <div class="currency-symbols">
+                <span>$</span>
+                <span>€</span>
+                <span>£</span>
+                <span>¥</span>
+            </div>
+            <h2>FX TAE 1% TRADING CIRCLE</h2>
+            <p>Loading Professional Trading Dashboard...</p>
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container" id="mainContainer" style="display: none;">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <div class="nav-left">
+                <button class="menu-btn" id="menuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h1>FX TAE <span>1% CIRCLE</span></h1>
+                </div>
+            </div>
+            
+            <div class="nav-right">
+                <div class="date-display" id="currentDate"></div>
+                <div class="account-balance-display">
+                    <span class="balance-label">Balance:</span>
+                    <span class="balance-value" id="accountBalance">$10,000.00</span>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-details">
+                        <p class="user-name" id="userName">Trader</p>
+                        <p class="user-email" id="userEmail">trader@example.com</p>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <ul class="nav-menu">
+                <li><a href="#" class="nav-item active" data-page="dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="#" class="nav-item" data-page="journal"><i class="fas fa-book"></i> Trade Journal</a></li>
+                <li><a href="#" class="nav-item" data-page="analytics"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+                <li><a href="#" class="nav-item" data-page="notebook"><i class="fas fa-dream"></i> Dream Notebook</a></li>
+                <li><a href="#" class="nav-item" data-page="community"><i class="fas fa-users"></i> Community</a></li>
+                <li><a href="#" class="nav-item" data-page="resources"><i class="fas fa-link"></i> Resources</a></li>
+                <li><a href="#" class="nav-item" data-page="motivation"><i class="fas fa-fire"></i> Motivation</a></li>
+                <li><a href="#" class="nav-item" data-page="settings"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="#" class="nav-item" data-page="contact"><i class="fas fa-envelope"></i> Contact</a></li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <button class="edit-balance-btn" id="editBalanceBtn">
+                    <i class="fas fa-edit"></i> Edit Balance
+                </button>
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content" id="mainContent">
+            <!-- Dashboard Page -->
+            <section class="page active" id="dashboard">
+                <!-- Mentorship Banner -->
+                <div class="mentorship-banner">
+                    <h3><i class="fas fa-crown"></i> JOIN THE 1% TRADING CIRCLE</h3>
+                    <a href="https://fxtaetrader.page.gd/" class="join-1percent-btn" target="_blank">
+                        <i class="fas fa-rocket"></i> JOIN NOW
+                    </a>
+                </div>
+
+                <div class="page-header">
+                    <h2>Professional Trading Dashboard</h2>
+                    <button class="export-btn" id="exportDashboard">
+                        <i class="fas fa-download"></i> Export Dashboard
+                    </button>
+                </div>
+
+                <!-- Performance Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card blue-card">
+                        <div class="stat-header">
+                            <h3><i class="fas fa-calendar-day"></i> Today's P&L</h3>
+                            <div class="stat-actions">
+                                <button class="edit-trades-btn" onclick="editTodayTrades()">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="download-btn" onclick="downloadTodayStats()">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="todayPnl">$0.00</div>
+                        <div class="stat-details" id="todayTradesList">No trades today</div>
+                        <div class="stat-change">Start trading to see performance</div>
+                    </div>
+
+                    <div class="stat-card purple-card">
+                        <div class="stat-header">
+                            <h3><i class="fas fa-exchange-alt"></i> Today's Trades</h3>
+                            <div class="stat-actions">
+                                <button class="edit-trades-btn" onclick="editTodayTrades()">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="download-btn" onclick="downloadTrades()">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="todayTradesCount">0/4</div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <span>0% Daily Limit</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card green-card">
+                        <div class="stat-header">
+                            <h3><i class="fas fa-calendar-week"></i> Weekly Performance</h3>
+                            <button class="download-btn" onclick="downloadWeeklyStats()">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                        <div class="stat-value" id="weeklyPnl">$0.00</div>
+                        <div class="stat-details" id="weeklyTradesList">No weekly trades</div>
+                        <div class="stat-change">Weekly performance will appear here</div>
+                    </div>
+
+                    <div class="stat-card orange-card">
+                        <div class="stat-header">
+                            <h3><i class="fas fa-calendar-alt"></i> Monthly Performance</h3>
+                            <button class="download-btn" onclick="downloadMonthlyStats()">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                        <div class="stat-value" id="monthlyPnl">$0.00</div>
+                        <div class="stat-details" id="monthlyTradesList">No monthly trades</div>
+                        <div class="stat-change">Monthly performance will appear here</div>
+                    </div>
+                </div>
+
+                <!-- Account Balance Manager -->
+                <div class="balance-manager-card">
+                    <div class="section-header">
+                        <h3><i class="fas fa-wallet"></i> Account Balance Manager</h3>
+                    </div>
+                    
+                    <div class="balance-form">
+                        <div class="balance-input-group">
+                            <label><i class="fas fa-dollar-sign"></i> Current Balance ($)</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">$</span>
+                                <input type="number" id="currentBalanceInput" class="form-input" placeholder="Enter current balance" readonly>
+                            </div>
+                            <p class="balance-note">Auto-updated from trades</p>
+                        </div>
+                        
+                        <div class="balance-stats">
+                            <div class="balance-stat">
+                                <div class="balance-stat-header">
+                                    <span class="stat-label">Starting Balance</span>
+                                    <button class="edit-starting-balance-btn" onclick="editStartingBalance()" title="Edit Starting Balance">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
+                                <div class="balance-stat-content">
+                                    <span class="stat-value" id="startingBalance">$10,000.00</span>
+                                    <input type="number" id="startingBalanceInput" class="edit-input" style="display: none;" placeholder="Enter new starting balance" step="0.01" min="0">
+                                </div>
+                                <div class="edit-buttons">
+                                    <button id="saveBalanceBtn" class="save-balance-btn" style="display: none;">
+                                        <i class="fas fa-check"></i> Save
+                                    </button>
+                                    <button id="cancelBalanceBtn" class="cancel-balance-btn" style="display: none;">
+                                        <i class="fas fa-times"></i> Cancel
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="balance-stat">
+                                <span class="stat-label">Total Growth</span>
+                                <span class="stat-value" id="totalGrowth">$0.00</span>
+                            </div>
+                            <div class="balance-stat">
+                                <span class="stat-label">Growth %</span>
+                                <span class="stat-value" id="growthPercentage">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="charts-container">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-chart-line"></i> Equity Curve</h3>
+                            <div class="chart-period">
+                                <button class="period-btn active" data-period="7d">7D</button>
+                                <button class="period-btn" data-period="1m">1M</button>
+                                <button class="period-btn" data-period="3m">3M</button>
+                            </div>
+                        </div>
+                        <div class="chart-canvas-container">
+                            <canvas id="equityChart"></canvas>
+                        </div>
+                        <div class="chart-download-btn">
+                            <button class="btn-secondary" onclick="downloadChartAsPDF('equityChart', 'Equity_Curve')">
+                                <i class="fas fa-download"></i> Download Chart
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-chart-pie"></i> Win Rate Analysis</h3>
+                            <div class="win-rate">
+                                <span class="rate-value" id="winRateValue">0%</span>
+                                <span class="rate-label">Win Rate</span>
+                            </div>
+                        </div>
+                        <div class="chart-canvas-container">
+                            <canvas id="winRateChart"></canvas>
+                        </div>
+                        <div class="chart-download-btn">
+                            <button class="btn-secondary" onclick="downloadChartAsPDF('winRateChart', 'Win_Rate_Analysis')">
+                                <i class="fas fa-download"></i> Download Chart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Trade Entry -->
+                <div class="trade-entry-card">
+                    <div class="section-header">
+                        <h3><i class="fas fa-bolt"></i> Quick Trade Entry</h3>
+                        <button class="btn-secondary" onclick="saveAndDownloadTrade()">
+                            <i class="fas fa-save"></i> Save & Download
+                        </button>
+                    </div>
+                    
+                    <form class="trade-form" id="tradeForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label><i class="far fa-calendar"></i> Date</label>
+                                <input type="date" id="tradeDate" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-hashtag"></i> Trade # (1-4)</label>
+                                <select id="tradeNumber" class="form-input" required>
+                                    <option value="1">Trade 1</option>
+                                    <option value="2">Trade 2</option>
+                                    <option value="3">Trade 3</option>
+                                    <option value="4">Trade 4</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-chess-knight"></i> Strategy</label>
+                                <div class="strategy-input-group">
+                                    <select id="strategy" class="form-input" required>
+                                        <option value="Breakout">Breakout Trading</option>
+                                        <option value="Trend">Trend Following</option>
+                                        <option value="Scalping">Scalping</option>
+                                        <option value="Swing">Swing Trading</option>
+                                        <option value="Price Action">Price Action</option>
+                                        <option value="News Trading">News Trading</option>
+                                        <option value="Supply Demand">Supply & Demand</option>
+                                    </select>
+                                    <button type="button" class="btn-secondary" onclick="showCustomStrategy()">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                                <input type="text" id="customStrategy" class="form-input" style="display: none; margin-top: 0.5rem;" placeholder="Enter custom strategy name">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label><i class="fas fa-globe"></i> Currency Pair / Instrument</label>
+                                <select id="currencyPair" class="form-input" required>
+                                    <optgroup label="Major Forex">
+                                        <option value="EUR/USD">EUR/USD</option>
+                                        <option value="GBP/USD">GBP/USD</option>
+                                        <option value="USD/JPY">USD/JPY</option>
+                                        <option value="AUD/USD">AUD/USD</option>
+                                        <option value="USD/CAD">USD/CAD</option>
+                                        <option value="NZD/USD">NZD/USD</option>
+                                        <option value="USD/CHF">USD/CHF</option>
+                                        <option value="EUR/GBP">EUR/GBP</option>
+                                        <option value="EUR/JPY">EUR/JPY</option>
+                                        <option value="GBP/JPY">GBP/JPY</option>
+                                    </optgroup>
+                                    <optgroup label="Metals">
+                                        <option value="XAU/USD">XAU/USD (Gold)</option>
+                                        <option value="XAG/USD">XAG/USD (Silver)</option>
+                                    </optgroup>
+                                    <optgroup label="Indices">
+                                        <option value="US30">US30 (Dow Jones)</option>
+                                        <option value="NAS100">NAS100 (Nasdaq)</option>
+                                        <option value="SPX500">SPX500 (S&P 500)</option>
+                                    </optgroup>
+                                    <optgroup label="Crypto">
+                                        <option value="BTC/USD">BTC/USD (Bitcoin)</option>
+                                        <option value="ETH/USD">ETH/USD (Ethereum)</option>
+                                    </optgroup>
+                                    <optgroup label="Commodities">
+                                        <option value="USOIL">USOIL (Crude Oil)</option>
+                                        <option value="UKOIL">UKOIL (Brent Oil)</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-coins"></i> P&L ($)</label>
+                                <div class="input-with-icon">
+                                    <span class="input-icon">$</span>
+                                    <input type="number" step="0.01" id="pnlAmount" class="form-input" placeholder="Enter amount" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-sticky-note"></i> Notes</label>
+                                <input type="text" id="tradeNotes" class="form-input" placeholder="Trade setup, emotions, lessons...">
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn-primary" onclick="saveTrade()">
+                                <i class="fas fa-save"></i> Save Trade
+                            </button>
+                            <button type="button" class="btn-secondary" onclick="saveAndDownloadTrade()">
+                                <i class="fas fa-download"></i> Save & Download PDF
+                            </button>
+                            <button type="reset" class="btn-outline">
+                                <i class="fas fa-redo"></i> Clear Form
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Recent Trades -->
+                <div class="recent-trades-card">
+                    <div class="section-header">
+                        <h3><i class="fas fa-history"></i> Recent Trades</h3>
+                        <button class="edit-trades-btn" onclick="editTodayTrades()">
+                            <i class="fas fa-edit"></i> Edit Today's Trades
+                        </button>
+                    </div>
+                    <div class="trades-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Trade #</th>
+                                    <th>Pair</th>
+                                    <th>Strategy</th>
+                                    <th>P&L</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentTradesTable">
+                                <!-- Will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Journal Page -->
+            <section class="page" id="journal">
+                <div class="page-header">
+                    <h2>Trade Journal</h2>
+                    <button class="export-btn" onclick="exportJournalPDF()">
+                        <i class="fas fa-file-pdf"></i> Export Journal PDF
+                    </button>
+                </div>
+                <div class="trades-table full-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Trade #</th>
+                                <th>Pair</th>
+                                <th>Strategy</th>
+                                <th>P&L</th>
+                                <th>Notes</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allTradesTable">
+                            <!-- Will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Analytics Page -->
+            <section class="page" id="analytics">
+                <div class="page-header">
+                    <h2>Advanced Analytics</h2>
+                    <button class="export-btn" onclick="exportAnalyticsPDF()">
+                        <i class="fas fa-chart-bar"></i> Export Analytics PDF
+                    </button>
+                </div>
+                
+                <div class="analytics-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-chart-pie"></i> Winning vs Losing</h3>
+                        </div>
+                        <div class="chart-canvas-container">
+                            <canvas id="winLossChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-chart-bar"></i> Profit Factor</h3>
+                            <div class="win-rate">
+                                <span class="rate-value" id="profitFactorValue">0.0</span>
+                                <span class="rate-label">Profit Factor</span>
+                            </div>
+                        </div>
+                        <div class="chart-canvas-container">
+                            <canvas id="profitFactorChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-calendar-alt"></i> Daily P&L Calendar</h3>
+                        </div>
+                        <div class="calendar-container">
+                            <div class="calendar-controls">
+                                <button onclick="changeCalendarMonth(-1)"><i class="fas fa-chevron-left"></i></button>
+                                <span id="calendarMonth">January 2024</span>
+                                <button onclick="changeCalendarMonth(1)"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                            <div class="calendar-grid" id="calendarGrid">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Dream Notebook Page -->
+            <section class="page" id="notebook">
+                <div class="page-header">
+                    <h2>Dream Notebook</h2>
+                    <button class="export-btn" onclick="exportNotebookPDF()">
+                        <i class="fas fa-download"></i> Export Dreams PDF
+                    </button>
+                </div>
+                
+                <div class="notebook-container">
+                    <div class="dream-input-group">
+                        <label><i class="fas fa-pen"></i> Write Your Trading Dreams & Goals</label>
+                        <textarea id="dreamInput" placeholder="Write your trading dreams, goals, and aspirations here. Be specific about what you want to achieve..."></textarea>
+                        <div class="form-actions">
+                            <button class="btn-primary" onclick="saveDream()">
+                                <i class="fas fa-save"></i> Save Dream
+                            </button>
+                            <button class="btn-secondary" onclick="clearDream()">
+                                <i class="fas fa-redo"></i> Clear
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="dreams-list" id="dreamsList">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Community Page -->
+            <section class="page" id="community">
+                <div class="page-header">
+                    <h2>Join Our Community</h2>
+                </div>
+                
+                <div class="community-grid">
+                    <div class="community-card">
+                        <div class="community-icon">
+                            <i class="fab fa-telegram"></i>
+                        </div>
+                        <h3>Telegram Group</h3>
+                        <p>Join our active Telegram community for daily market analysis, trade ideas, and discussions with fellow traders.</p>
+                        <a href="https://t.me/fxtaetrader" class="community-btn" target="_blank">
+                            <i class="fab fa-telegram"></i> Join Telegram
+                        </a>
+                    </div>
+                    
+                    <div class="community-card">
+                        <div class="community-icon">
+                            <i class="fab fa-youtube"></i>
+                        </div>
+                        <h3>YouTube Channel</h3>
+                        <p>Subscribe to our YouTube channel for educational content, live trading sessions, and market insights.</p>
+                        <a href="https://youtube.com/fxtaetrader" class="community-btn" target="_blank">
+                            <i class="fab fa-youtube"></i> Subscribe
+                        </a>
+                    </div>
+                    
+                    <div class="community-card">
+                        <div class="community-icon">
+                            <i class="fab fa-instagram"></i>
+                        </div>
+                        <h3>Instagram</h3>
+                        <p>Follow us on Instagram for trading psychology tips, daily motivation, and behind-the-scenes content.</p>
+                        <a href="https://instagram.com/fxtaetrader" class="community-btn" target="_blank">
+                            <i class="fas fa-instagram"></i> Follow
+                        </a>
+                    </div>
+                    
+                    <div class="community-card">
+                        <div class="community-icon">
+                            <i class="fab fa-tiktok"></i>
+                        </div>
+                        <h3>TikTok</h3>
+                        <p>Watch short, engaging trading tips and market analysis on our TikTok channel.</p>
+                        <a href="https://tiktok.com/@fx_tae_trader" class="community-btn" target="_blank">
+                            <i class="fab fa-tiktok"></i> Follow
+                        </a>
+                    </div>
+                    
+                    <div class="community-card">
+                        <div class="community-icon">
+                            <i class="fab fa-facebook"></i>
+                        </div>
+                        <h3>Facebook</h3>
+                        <p>Connect with us on Facebook for community events, live Q&A sessions, and trading resources.</p>
+                        <a href="https://facebook.com/fxtaetrader" class="community-btn" target="_blank">
+                            <i class="fab fa-facebook"></i> Like Page
+                        </a>
+                    </div>
+                    
+                    <div class="community-card">
+                        <div class="community-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h3>Exclusive Academy</h3>
+                        <p>Join our premium trading academy for personalized coaching, advanced strategies, and mentorship.</p>
+                        <a href="https://fxtaetrader.page.gd/" class="community-btn academy-btn" target="_blank">
+                            <i class="fas fa-rocket"></i> Join Academy
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Resources Page -->
+            <section class="page" id="resources">
+                <div class="page-header">
+                    <h2>Trading Resources</h2>
+                </div>
+                
+                <div class="resources-grid">
+                    <!-- Brokers -->
+                    <div class="resource-card blue-card">
+                        <div class="resource-icon">
+                            <i class="fas fa-university"></i>
+                        </div>
+                        <h3>Trusted Brokers</h3>
+                        <div class="resource-links">
+                            <a href="https://one.exnessonelink.com/a/f8t7u25p4e?source=app" target="_blank" class="resource-link">
+                                <i class="fas fa-external-link-alt"></i>
+                                <div>
+                                    <strong>Exness</strong>
+                                    <span>Low spreads, fast execution</span>
+                                </div>
+                            </a>
+                            <a href="https://www.xm.com" target="_blank" class="resource-link">
+                                <i class="fas fa-external-link-alt"></i>
+                                <div>
+                                    <strong>XM Broker</strong>
+                                    <span>1000+ instruments</span>
+                                </div>
+                            </a>
+                            <a href="https://www.fbs.com" target="_blank" class="resource-link">
+                                <i class="fas fa-external-link-alt"></i>
+                                <div>
+                                    <strong>FBS Broker</strong>
+                                    <span>Popular broker worldwide</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Prop Firms -->
+                    <div class="resource-card purple-card">
+                        <div class="resource-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <h3>Prop Trading Firms</h3>
+                        <div class="resource-links">
+                            <a href="https://www.fundednext.com" target="_blank" class="resource-link">
+                                <i class="fas fa-external-link-alt"></i>
+                                <div>
+                                    <strong>Funded Next</strong>
+                                    <span>High payouts, great scaling</span>
+                                </div>
+                            </a>
+                            <a href="https://www.fundingpips.com" target="_blank" class="resource-link">
+                                <i class="fas fa-external-link-alt"></i>
+                                <div>
+                                    <strong>Funding Pips</strong>
+                                    <span>Flexible rules, instant funding</span>
+                                </div>
+                            </a>
+                            <a href="https://www.ftmo.com" target="_blank" class="resource-link">
+                                <i class="fas fa-external-link-alt"></i>
+                                <div>
+                                    <strong>FTMO</strong>
+                                    <span>Industry leader, 90% profit split</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Analysis Tools -->
+                    <div class="resource-card green-card">
+                        <div class="resource-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>Analysis Tools</h3>
+                        <div class="resource-links">
+                            <a href="https://www.forexfactory.com" target="_blank" class="resource-link">
+                                <i class="fas fa-external-link-alt"></i>
+                                <div>
+                                    <strong>Forex Factory</strong>
+                                    <span>Economic calendar & news</span>
+                                </div>
+                            </a>
+                            <a href="https://www.babypips.com" target="_blank" class="resource-link">
+                                <i class="fas fa-external-link-alt"></i>
+                                <div>
+                                    <strong>BabyPips</strong>
+                                    <span>Education & market sentiment</span>
+                                </div>
+                            </a>
+                            <a href="https://www.tradingview.com" target="_blank" class="resource-link">
+                                <i class="fas fa-external-link-alt"></i>
+                                <div>
+                                    <strong>TradingView</strong>
+                                    <span>Advanced charts & community</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Trading Platforms -->
+                    <div class="resource-card orange-card">
+                        <div class="resource-icon">
+                            <i class="fas fa-desktop"></i>
+                        </div>
+                        <h3>Trading Platforms</h3>
+                        <div class="resource-links">
+                            <a href="https://www.metatrader4.com" target="_blank" class="resource-link">
+                                <i class="fas fa-external-link-alt"></i>
+                                <div>
+                                    <strong>MetaTrader 4</strong>
+                                    <span>Most popular trading platform</span>
+                                </div>
+                            </a>
+                            <a href="https://www.metatrader5.com" target="_blank" class="resource-link">
+                                <i class="fas fa-external-link-alt"></i>
+                                <div>
+                                    <strong>MetaTrader 5</strong>
+                                    <span>Advanced features</span>
+                                </div>
+                            </a>
+                            <a href="https://www.tradingview.com" target="_blank" class="resource-link">
+                                <i class="fas fa-external-link-alt"></i>
+                                <div>
+                                    <strong>TradingView</strong>
+                                    <span>Web-based charts & analysis</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Motivation Page -->
+            <section class="page" id="motivation">
+                <div class="page-header">
+                    <h2>Trader's Mindset</h2>
+                </div>
+                
+                <div class="motivation-quote">
+                    <i class="fas fa-quote-left"></i>
+                    <h3>"The goal of a successful trader is to make the best trades. Money is secondary."</h3>
+                    <p>- Alexander Elder</p>
+                </div>
+                
+                <div class="motivation-grid">
+                    <div class="motivation-card blue-card">
+                        <div class="motivation-icon">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <h4>1. Discipline</h4>
+                        <p>Stick to your trading plan regardless of emotions. Every trade must follow your rules.</p>
+                    </div>
+                    
+                    <div class="motivation-card purple-card">
+                        <div class="motivation-icon">
+                            <i class="fas fa-hourglass-half"></i>
+                        </div>
+                        <h4>2. Patience</h4>
+                        <p>Wait for the right setups. The market will always provide opportunities.</p>
+                    </div>
+                    
+                    <div class="motivation-card green-card">
+                        <div class="motivation-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h4>3. Psychology</h4>
+                        <p>Master your emotions. Fear and greed are your biggest enemies.</p>
+                    </div>
+                    
+                    <div class="motivation-card orange-card">
+                        <div class="motivation-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <h4>4. Journaling</h4>
+                        <p>Record every trade. Review regularly. Learn from both wins and losses.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Page -->
+            <section class="page" id="settings">
+                <div class="page-header">
+                    <h2>Settings</h2>
+                </div>
+                
+                <div class="settings-container">
+                    <div class="settings-group">
+                        <h3><i class="fas fa-palette"></i> Theme Settings</h3>
+                        
+                        <div class="theme-toggle">
+                            <button class="theme-btn active" onclick="setTheme('light')">
+                                <i class="fas fa-sun"></i> Light Theme
+                            </button>
+                            <button class="theme-btn" onclick="setTheme('dark')">
+                                <i class="fas fa-moon"></i> Dark Theme
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-group">
+                        <h3><i class="fas fa-bell"></i> Notifications</h3>
+                        
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <span>Trade Reminders</span>
+                                <small>Get reminders for trade entries</small>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="tradeReminders" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <span>Daily Summary</span>
+                                <small>Receive daily performance summary</small>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="dailySummary" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-group">
+                        <h3><i class="fas fa-database"></i> Data Management</h3>
+                        
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <span>Export All Data (PDF)</span>
+                                <small>Download all trades and settings as PDF</small>
+                            </div>
+                            <button class="btn-secondary" onclick="exportAllDataPDF()">
+                                <i class="fas fa-download"></i> Export PDF
+                            </button>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <span>Clear All Data</span>
+                                <small>Delete all trades and reset account</small>
+                            </div>
+                            <button class="btn-outline" onclick="clearAllData()">
+                                <i class="fas fa-trash"></i> Clear
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contact Page -->
+            <section class="page" id="contact">
+                <div class="page-header">
+                    <h2>Contact FX Tae</h2>
+                </div>
+                
+                <div class="contact-container">
+                    <div class="contact-info">
+                        <h3><i class="fas fa-info-circle"></i> Contact Information</h3>
+                        
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <h4>Email</h4>
+                                <p>fxtae.chartprogram@gmail.com</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <div>
+                                <h4>Phone</h4>
+                                <p>+256 778997909</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <i class="fab fa-whatsapp"></i>
+                            <div>
+                                <h4>WhatsApp</h4>
+                                <p>+256 778997909</p>
+                            </div>
+                        </div>
+                        
+                        <h3 class="social-title"><i class="fas fa-share-alt"></i> Social Media</h3>
+                        
+                        <div class="social-links">
+                            <a href="https://www.tiktok.com/@fx_tae_trader" class="social-link" target="_blank">
+                                <i class="fab fa-tiktok"></i> @fx_tae_trader
+                            </a>
+                            
+                            <a href="https://www.instagram.com/fxtaetrader" class="social-link" target="_blank">
+                                <i class="fab fa-instagram"></i> @fxtaetrader
+                            </a>
+                            
+                            <a href="https://www.youtube.com/fxtaetrader" class="social-link" target="_blank">
+                                <i class="fab fa-youtube"></i> @fxtaetrader
+                            </a>
+                            
+                            <a href="https://www.facebook.com/fxtaetrader" class="social-link" target="_blank">
+                                <i class="fab fa-facebook"></i> @FXTaeTrader
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="mentorship-card">
+                        <div class="mentorship-badge">
+                            <i class="fas fa-crown"></i> 1% CIRCLE
+                        </div>
+                        <h3><i class="fas fa-graduation-cap"></i> Join 1% Trading Circle</h3>
+                        <p>Ready to level up your trading? Join FX Tae's exclusive mentorship program for personalized coaching, advanced strategies, and direct mentorship.</p>
+                        <a href="https://fxtaetrader.page.gd/" class="mentorship-btn" target="_blank">
+                            <i class="fas fa-rocket"></i> Apply for Mentorship
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="editBalanceModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Edit Account Balance</h3>
+                <button class="close-modal" onclick="closeEditBalanceModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>New Account Balance ($)</label>
+                    <input type="number" id="newBalanceInput" class="form-input" placeholder="Enter new balance">
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-primary" onclick="confirmBalanceUpdate()">Update Balance</button>
+                    <button class="btn-outline" onclick="closeEditBalanceModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="editTradesModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Edit Today's Trades</h3>
+                <button class="close-modal" onclick="closeEditTradesModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="todayTradesEditList"></div>
+                <div class="modal-actions">
+                    <button class="btn-primary" onclick="saveEditedTrades()">Save Changes</button>
+                    <button class="btn-outline" onclick="closeEditTradesModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="script.js"></script>
+    <script>
+        // Global variables
+        let trades = [];
+        let dreams = [];
+        let equityChart = null;
+        let winRateChart = null;
+        let winLossChart = null;
+        let profitFactorChart = null;
+        let accountBalance = 10000;
+        let startingBalance = 10000;
+        let currentCalendarMonth = new Date().getMonth();
+        let currentCalendarYear = new Date().getFullYear();
+
+        // Check authentication
+        if (!sessionStorage.getItem('fxTaeAuthenticated')) {
+            window.location.href = 'index.html';
+        }
+
+        // Dashboard initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize app after loading
+            setTimeout(() => {
+                const loader = document.getElementById('loader');
+                const mainContainer = document.getElementById('mainContainer');
+                
+                if (loader && mainContainer) {
+                    loader.style.opacity = '0';
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                        mainContainer.style.display = 'block';
+                        initializeApp();
+                    }, 500);
+                } else {
+                    initializeApp();
+                }
+            }, 2000);
+        });
+
+        // Initialize application
+        function initializeApp() {
+            console.log('Initializing FX Tae Trading Dashboard...');
+            
+            // Load user data
+            loadUserData();
+            
+            // Load trades
+            loadTrades();
+            
+            // Load dreams
+            loadDreams();
+            
+            // Initialize starting balance edit
+            initializeStartingBalanceEdit();
+            
+            // Update UI
+            updateCurrentDate();
+            updateUserInfo();
+            updateAccountBalanceDisplay();
+            updateRecentTrades();
+            updateAllTrades();
+            updateStats();
+            updateTradeLists();
+            updateDreamsList();
+            
+            // Initialize charts
+            setTimeout(() => {
+                initializeCharts();
+                updateCalendar();
+            }, 500);
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            console.log('Dashboard initialized successfully!');
+        }
+
+        // Load user data
+        function loadUserData() {
+            const currentUser = JSON.parse(localStorage.getItem('fxTaeCurrentUser') || '{}');
+            if (currentUser.name) {
+                document.getElementById('userName').textContent = currentUser.name;
+                document.getElementById('userEmail').textContent = currentUser.email;
+            }
+        }
+
+        // Load trades from localStorage
+        function loadTrades() {
+            const savedTrades = localStorage.getItem('fxTaeTrades');
+            
+            if (savedTrades) {
+                trades = JSON.parse(savedTrades);
+                console.log(`Loaded ${trades.length} trades from storage`);
+            } else {
+                trades = [];
+                console.log('Starting fresh - no trades yet');
+            }
+        }
+
+        // Load dreams from localStorage
+        function loadDreams() {
+            const savedDreams = localStorage.getItem('fxTaeDreams');
+            
+            if (savedDreams) {
+                dreams = JSON.parse(savedDreams);
+                console.log(`Loaded ${dreams.length} dreams from storage`);
+            } else {
+                dreams = [];
+                console.log('Starting fresh - no dreams yet');
+            }
+        }
+
+        // Save trades to localStorage
+        function saveTrades() {
+            localStorage.setItem('fxTaeTrades', JSON.stringify(trades));
+        }
+
+        // Save dreams to localStorage
+        function saveDreams() {
+            localStorage.setItem('fxTaeDreams', JSON.stringify(dreams));
+        }
+
+        // Save account balance to localStorage
+        function saveAccountBalance() {
+            localStorage.setItem('fxTaeAccountBalance', accountBalance.toString());
+            localStorage.setItem('fxTaeStartingBalance', startingBalance.toString());
+        }
+
+        // Initialize starting balance edit mode
+        function initializeStartingBalanceEdit() {
+            const savedStartingBalance = localStorage.getItem('fxTaeStartingBalance');
+            if (savedStartingBalance) {
+                startingBalance = parseFloat(savedStartingBalance);
+            }
+            
+            const savedAccountBalance = localStorage.getItem('fxTaeAccountBalance');
+            if (savedAccountBalance) {
+                accountBalance = parseFloat(savedAccountBalance);
+            }
+        }
+
+        // Update current date display
+        function updateCurrentDate() {
+            const dateElement = document.getElementById('currentDate');
+            if (dateElement) {
+                const now = new Date();
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                dateElement.textContent = now.toLocaleDateString('en-US', options);
+            }
+        }
+
+        // Update user info
+        function updateUserInfo() {
+            const currentUser = JSON.parse(localStorage.getItem('fxTaeCurrentUser') || '{}');
+            if (currentUser.name) {
+                document.getElementById('userName').textContent = currentUser.name;
+                document.getElementById('userEmail').textContent = currentUser.email;
+            }
+        }
+
+        // Update account balance display
+        function updateAccountBalanceDisplay() {
+            const balanceElement = document.getElementById('accountBalance');
+            const currentBalanceInput = document.getElementById('currentBalanceInput');
+            const startingBalanceElement = document.getElementById('startingBalance');
+            const totalGrowthElement = document.getElementById('totalGrowth');
+            const growthPercentageElement = document.getElementById('growthPercentage');
+            
+            // Calculate account balance from trades
+            const calculatedBalance = startingBalance + trades.reduce((sum, trade) => sum + trade.pnl, 0);
+            accountBalance = calculatedBalance;
+            
+            if (balanceElement) {
+                balanceElement.textContent = formatCurrency(accountBalance);
+            }
+            
+            if (currentBalanceInput) {
+                currentBalanceInput.value = accountBalance;
+            }
+            
+            if (startingBalanceElement) {
+                startingBalanceElement.textContent = formatCurrency(startingBalance);
+            }
+            
+            if (totalGrowthElement) {
+                const growth = accountBalance - startingBalance;
+                totalGrowthElement.textContent = formatCurrency(growth);
+                totalGrowthElement.className = `stat-value ${growth >= 0 ? 'profit' : 'loss'}`;
+            }
+            
+            if (growthPercentageElement) {
+                const growthPercentage = startingBalance > 0 ? ((accountBalance - startingBalance) / startingBalance) * 100 : 0;
+                growthPercentageElement.textContent = `${growthPercentage >= 0 ? '+' : ''}${growthPercentage.toFixed(1)}%`;
+                growthPercentageElement.className = `stat-value ${growthPercentage >= 0 ? 'profit' : 'loss'}`;
+            }
+            
+            // Save updated balance
+            saveAccountBalance();
+        }
+
+        // Update recent trades table
+        function updateRecentTrades() {
+            const tableBody = document.getElementById('recentTradesTable');
+            if (!tableBody) return;
+            
+            // Get 5 most recent trades
+            const recentTrades = [...trades]
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 5);
+            
+            if (recentTrades.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="no-trades">
+                            <i class="fas fa-chart-line"></i>
+                            <p>No trades recorded yet. Start trading to see your history here.</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tableBody.innerHTML = recentTrades.map(trade => `
+                <tr>
+                    <td>${formatDate(trade.date)}</td>
+                    <td>${trade.tradeNumber}</td>
+                    <td>${trade.pair}</td>
+                    <td>${trade.strategy}</td>
+                    <td class="${trade.pnl >= 0 ? 'profit' : 'loss'}">${formatCurrencyWithSign(trade.pnl)}</td>
+                    <td><span class="status-badge ${trade.pnl >= 0 ? 'profit' : 'loss'}">${trade.pnl >= 0 ? 'WIN' : 'LOSS'}</span></td>
+                    <td>
+                        <button class="action-btn edit-btn" onclick="editTrade(${trade.id})" title="Edit Trade">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deleteTrade(${trade.id})" title="Delete Trade">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Update all trades table
+        function updateAllTrades() {
+            const tableBody = document.getElementById('allTradesTable');
+            if (!tableBody) return;
+            
+            // Sort by date (newest first)
+            const allTrades = [...trades].sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            if (allTrades.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="no-trades">
+                            <i class="fas fa-chart-line"></i>
+                            <p>No trades recorded yet. Start trading to see your journal here.</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tableBody.innerHTML = allTrades.map(trade => `
+                <tr>
+                    <td>${formatDate(trade.date)}</td>
+                    <td>${trade.tradeNumber}</td>
+                    <td>${trade.pair}</td>
+                    <td>${trade.strategy}</td>
+                    <td class="${trade.pnl >= 0 ? 'profit' : 'loss'}">${formatCurrencyWithSign(trade.pnl)}</td>
+                    <td>${trade.notes || 'No notes'}</td>
+                    <td><span class="status-badge ${trade.pnl >= 0 ? 'profit' : 'loss'}">${trade.pnl >= 0 ? 'WIN' : 'LOSS'}</span></td>
+                    <td>
+                        <button class="action-btn edit-btn" onclick="editTrade(${trade.id})" title="Edit Trade">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deleteTrade(${trade.id})" title="Delete Trade">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Update statistics
+        function updateStats() {
+            const today = new Date().toISOString().split('T')[0];
+            const todayTrades = trades.filter(t => t.date === today);
+            const todayPnl = todayTrades.reduce((sum, trade) => sum + trade.pnl, 0);
+            
+            // Update Today's P&L
+            const todayPnlElement = document.getElementById('todayPnl');
+            if (todayPnlElement) {
+                todayPnlElement.textContent = formatCurrencyWithSign(todayPnl);
+                todayPnlElement.className = `stat-value ${todayPnl >= 0 ? 'profit' : 'loss'}`;
+            }
+            
+            // Update Today's Trades Count
+            const todayTradesCount = document.getElementById('todayTradesCount');
+            if (todayTradesCount) {
+                todayTradesCount.textContent = `${todayTrades.length}/4`;
+            }
+            
+            // Update progress bar
+            const progressFill = document.querySelector('.progress-fill');
+            if (progressFill) {
+                const progress = (todayTrades.length / 4) * 100;
+                progressFill.style.width = `${progress}%`;
+            }
+            
+            // Update Weekly Performance (last 7 days)
+            const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0];
+            const weeklyTrades = trades.filter(t => t.date >= weekAgo);
+            const weeklyPnl = weeklyTrades.reduce((sum, trade) => sum + trade.pnl, 0);
+            
+            const weeklyPnlElement = document.getElementById('weeklyPnl');
+            if (weeklyPnlElement) {
+                weeklyPnlElement.textContent = formatCurrencyWithSign(weeklyPnl);
+                weeklyPnlElement.className = `stat-value ${weeklyPnl >= 0 ? 'profit' : 'loss'}`;
+            }
+            
+            // Update Monthly Performance (last 30 days)
+            const monthAgo = new Date(Date.now() - 30 * 86400000).toISOString().split('T')[0];
+            const monthlyTrades = trades.filter(t => t.date >= monthAgo);
+            const monthlyPnl = monthlyTrades.reduce((sum, trade) => sum + trade.pnl, 0);
+            
+            const monthlyPnlElement = document.getElementById('monthlyPnl');
+            if (monthlyPnlElement) {
+                monthlyPnlElement.textContent = formatCurrencyWithSign(monthlyPnl);
+                monthlyPnlElement.className = `stat-value ${monthlyPnl >= 0 ? 'profit' : 'loss'}`;
+            }
+            
+            // Update win rate
+            updateWinRate();
+        }
+
+        // Update win rate
+        function updateWinRate() {
+            const winningTrades = trades.filter(t => t.pnl > 0).length;
+            const losingTrades = trades.filter(t => t.pnl < 0).length;
+            const totalTrades = winningTrades + losingTrades;
+            const winRate = totalTrades > 0 ? (winningTrades / totalTrades) * 100 : 0;
+            
+            const winRateElement = document.getElementById('winRateValue');
+            if (winRateElement) {
+                winRateElement.textContent = `${winRate.toFixed(1)}%`;
+            }
+            
+            // Update profit factor
+            const totalProfit = trades.filter(t => t.pnl > 0).reduce((sum, t) => sum + t.pnl, 0);
+            const totalLoss = Math.abs(trades.filter(t => t.pnl < 0).reduce((sum, t) => sum + t.pnl, 0));
+            const profitFactor = totalLoss > 0 ? totalProfit / totalLoss : totalProfit > 0 ? 999 : 0;
+            
+            const profitFactorElement = document.getElementById('profitFactorValue');
+            if (profitFactorElement) {
+                profitFactorElement.textContent = profitFactor.toFixed(2);
+            }
+        }
+
+        // Update trade lists
+        function updateTradeLists() {
+            const today = new Date().toISOString().split('T')[0];
+            const todayTrades = trades.filter(t => t.date === today);
+            const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0];
+            const weeklyTrades = trades.filter(t => t.date >= weekAgo);
+            const monthAgo = new Date(Date.now() - 30 * 86400000).toISOString().split('T')[0];
+            const monthlyTrades = trades.filter(t => t.date >= monthAgo);
+            
+            updateTradeList('todayTradesList', todayTrades);
+            updateTradeList('weeklyTradesList', weeklyTrades);
+            updateTradeList('monthlyTradesList', monthlyTrades);
+        }
+
+        function updateTradeList(elementId, tradeList) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            
+            if (tradeList.length === 0) {
+                element.innerHTML = '<p class="no-trades">No trades recorded</p>';
+                return;
+            }
+            
+            const list = tradeList.slice(0, 3).map(trade => `
+                <div class="trade-item">
+                    <span>${formatDate(trade.date)}</span>
+                    <span>${trade.pair}</span>
+                    <span class="${trade.pnl >= 0 ? 'profit' : 'loss'}">${formatCurrencyWithSign(trade.pnl)}</span>
+                </div>
+            `).join('');
+            
+            element.innerHTML = list;
+        }
+
+        // Update dreams list
+        function updateDreamsList() {
+            const dreamsList = document.getElementById('dreamsList');
+            if (!dreamsList) return;
+            
+            if (dreams.length === 0) {
+                dreamsList.innerHTML = `
+                    <div class="no-dreams">
+                        <i class="fas fa-cloud"></i>
+                        <p>No dreams recorded yet. Write your first trading dream!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Sort by date (newest first)
+            const sortedDreams = [...dreams].sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            dreamsList.innerHTML = sortedDreams.map(dream => `
+                <div class="dream-card">
+                    <div class="dream-header">
+                        <span class="dream-date">${formatDate(dream.date)}</span>
+                        <div class="dream-actions">
+                            <button class="action-btn edit-btn" onclick="editDream(${dream.id})" title="Edit Dream">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn delete-btn" onclick="deleteDream(${dream.id})" title="Delete Dream">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="dream-content">${dream.content}</div>
+                </div>
+            `).join('');
+        }
+
+        // Initialize charts
+        function initializeCharts() {
+            console.log('Initializing charts...');
+            
+            // Equity Chart
+            const equityCtx = document.getElementById('equityChart');
+            if (equityCtx) {
+                const equityData = getEquityData();
+                
+                equityChart = new Chart(equityCtx, {
+                    type: 'line',
+                    data: equityData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                callbacks: {
+                                    label: function(context) {
+                                        return `Balance: $${context.parsed.y.toLocaleString()}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                ticks: {
+                                    callback: function(value) {
+                                        return '$' + value.toLocaleString();
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                console.log('Equity chart created');
+            }
+            
+            // Win Rate Chart
+            const winRateCtx = document.getElementById('winRateChart');
+            if (winRateCtx) {
+                const winRateData = getWinRateData();
+                
+                winRateChart = new Chart(winRateCtx, {
+                    type: 'doughnut',
+                    data: winRateData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '70%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+                
+                console.log('Win rate chart created');
+            }
+            
+            // Win Loss Chart
+            const winLossCtx = document.getElementById('winLossChart');
+            if (winLossCtx) {
+                const winLossData = getWinLossData();
+                
+                winLossChart = new Chart(winLossCtx, {
+                    type: 'pie',
+                    data: winLossData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+                
+                console.log('Win loss chart created');
+            }
+            
+            // Profit Factor Chart
+            const profitFactorCtx = document.getElementById('profitFactorChart');
+            if (profitFactorCtx) {
+                const profitFactorData = getProfitFactorData();
+                
+                profitFactorChart = new Chart(profitFactorCtx, {
+                    type: 'bar',
+                    data: profitFactorData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+                
+                console.log('Profit factor chart created');
+            }
+        }
+
+        // Get equity data for chart
+        function getEquityData() {
+            // Start with initial balance
+            let balance = startingBalance;
+            const data = [balance];
+            const labels = ['Start'];
+            
+            // Sort trades by date
+            const sortedTrades = [...trades].sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+            sortedTrades.forEach((trade, index) => {
+                balance += trade.pnl;
+                data.push(balance);
+                labels.push(`Trade ${index + 1}`);
+            });
+            
+            return {
+                labels: labels,
+                datasets: [{
+                    label: 'Account Balance',
+                    data: data,
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4
+                }]
+            };
+        }
+
+        // Get win rate data for chart
+        function getWinRateData() {
+            const winningTrades = trades.filter(t => t.pnl > 0).length;
+            const losingTrades = trades.filter(t => t.pnl < 0).length;
+            const breakEvenTrades = trades.filter(t => t.pnl === 0).length;
+            
+            return {
+                labels: ['Winning Trades', 'Losing Trades', 'Break Even'],
+                datasets: [{
+                    data: [winningTrades, losingTrades, breakEvenTrades],
+                    backgroundColor: [
+                        '#10b981',
+                        '#ef4444',
+                        '#94a3b8'
+                    ],
+                    borderWidth: 0
+                }]
+            };
+        }
+
+        // Get win loss data for chart
+        function getWinLossData() {
+            const winningTrades = trades.filter(t => t.pnl > 0);
+            const losingTrades = trades.filter(t => t.pnl < 0);
+            
+            const totalProfit = winningTrades.reduce((sum, t) => sum + t.pnl, 0);
+            const totalLoss = Math.abs(losingTrades.reduce((sum, t) => sum + t.pnl, 0));
+            
+            return {
+                labels: ['Total Profit', 'Total Loss'],
+                datasets: [{
+                    data: [totalProfit, totalLoss],
+                    backgroundColor: [
+                        '#10b981',
+                        '#ef4444'
+                    ],
+                    borderWidth: 0
+                }]
+            };
+        }
+
+        // Get profit factor data for chart
+        function getProfitFactorData() {
+            const months = getLast6Months();
+            const data = [];
+            
+            months.forEach(month => {
+                const monthTrades = trades.filter(t => {
+                    const tradeDate = new Date(t.date);
+                    return tradeDate.getMonth() === month.month && tradeDate.getFullYear() === month.year;
+                });
+                
+                const totalProfit = monthTrades.filter(t => t.pnl > 0).reduce((sum, t) => sum + t.pnl, 0);
+                const totalLoss = Math.abs(monthTrades.filter(t => t.pnl < 0).reduce((sum, t) => sum + t.pnl, 0));
+                const profitFactor = totalLoss > 0 ? totalProfit / totalLoss : totalProfit > 0 ? 999 : 0;
+                
+                data.push(profitFactor);
+            });
+            
+            return {
+                labels: months.map(m => m.label),
+                datasets: [{
+                    label: 'Profit Factor',
+                    data: data,
+                    backgroundColor: '#3b82f6',
+                    borderColor: '#1d4ed8',
+                    borderWidth: 1
+                }]
+            };
+        }
+
+        // Get last 6 months for chart
+        function getLast6Months() {
+            const months = [];
+            const now = new Date();
+            
+            for (let i = 5; i >= 0; i--) {
+                const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                months.push({
+                    month: date.getMonth(),
+                    year: date.getFullYear(),
+                    label: date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' })
+                });
+            }
+            
+            return months;
+        }
+
+        // Update calendar
+        function updateCalendar() {
+            const calendarGrid = document.getElementById('calendarGrid');
+            const calendarMonth = document.getElementById('calendarMonth');
+            
+            if (!calendarGrid || !calendarMonth) return;
+            
+            // Update month display
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                              'July', 'August', 'September', 'October', 'November', 'December'];
+            calendarMonth.textContent = `${monthNames[currentCalendarMonth]} ${currentCalendarYear}`;
+            
+            // Get first day of month and number of days
+            const firstDay = new Date(currentCalendarYear, currentCalendarMonth, 1);
+            const lastDay = new Date(currentCalendarYear, currentCalendarMonth + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startingDay = firstDay.getDay();
+            
+            // Create calendar header
+            let calendarHTML = `
+                <div class="calendar-header">Sun</div>
+                <div class="calendar-header">Mon</div>
+                <div class="calendar-header">Tue</div>
+                <div class="calendar-header">Wed</div>
+                <div class="calendar-header">Thu</div>
+                <div class="calendar-header">Fri</div>
+                <div class="calendar-header">Sat</div>
+            `;
+            
+            // Add empty cells for days before the first day of month
+            for (let i = 0; i < startingDay; i++) {
+                calendarHTML += '<div class="calendar-day empty"></div>';
+            }
+            
+            // Add days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${currentCalendarYear}-${String(currentCalendarMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const dayTrades = trades.filter(t => t.date === dateStr);
+                const dayPnl = dayTrades.reduce((sum, t) => sum + t.pnl, 0);
+                
+                let dayClass = 'calendar-day';
+                let pnlClass = '';
+                let pnlText = '';
+                
+                if (dayTrades.length > 0) {
+                    dayClass += dayPnl >= 0 ? ' profit' : ' loss';
+                    pnlClass = dayPnl >= 0 ? 'profit' : 'loss';
+                    pnlText = formatCurrencyWithSign(dayPnl);
+                }
+                
+                calendarHTML += `
+                    <div class="${dayClass}" onclick="viewDayTrades('${dateStr}')">
+                        <div class="calendar-date">${day}</div>
+                        ${dayTrades.length > 0 ? `
+                            <div class="calendar-pnl ${pnlClass}">${pnlText}</div>
+                            <div class="calendar-trades">${dayTrades.length} trade(s)</div>
+                        ` : ''}
+                    </div>
+                `;
+            }
+            
+            calendarGrid.innerHTML = calendarHTML;
+        }
+
+        // Change calendar month
+        function changeCalendarMonth(direction) {
+            currentCalendarMonth += direction;
+            
+            if (currentCalendarMonth < 0) {
+                currentCalendarMonth = 11;
+                currentCalendarYear--;
+            } else if (currentCalendarMonth > 11) {
+                currentCalendarMonth = 0;
+                currentCalendarYear++;
+            }
+            
+            updateCalendar();
+        }
+
+        // View day trades
+        function viewDayTrades(dateStr) {
+            const dayTrades = trades.filter(t => t.date === dateStr);
+            
+            if (dayTrades.length === 0) {
+                showToast('No trades on this date', 'info');
+                return;
+            }
+            
+            const date = new Date(dateStr);
+            const dateFormatted = date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const totalPnl = dayTrades.reduce((sum, t) => sum + t.pnl, 0);
+            
+            let tradesHTML = dayTrades.map(trade => `
+                <div class="day-trade-item">
+                    <strong>Trade ${trade.tradeNumber}</strong>
+                    <span>${trade.pair} - ${trade.strategy}</span>
+                    <span class="${trade.pnl >= 0 ? 'profit' : 'loss'}">${formatCurrencyWithSign(trade.pnl)}</span>
+                </div>
+            `).join('');
+            
+            const modalContent = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3><i class="fas fa-calendar-day"></i> Trades on ${dateFormatted}</h3>
+                        <button class="close-modal" onclick="closeModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="day-summary">
+                            <div class="summary-item">
+                                <span>Total Trades:</span>
+                                <strong>${dayTrades.length}</strong>
+                            </div>
+                            <div class="summary-item">
+                                <span>Daily P&L:</span>
+                                <strong class="${totalPnl >= 0 ? 'profit' : 'loss'}">${formatCurrencyWithSign(totalPnl)}</strong>
+                            </div>
+                        </div>
+                        <div class="day-trades-list">
+                            ${tradesHTML}
+                        </div>
+                        <div class="modal-actions">
+                            <button class="btn-outline" onclick="closeModal()">Close</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            showModal(modalContent);
+        }
+
+        // Save a new trade
+        function saveTrade() {
+            const date = document.getElementById('tradeDate').value;
+            const tradeNumber = parseInt(document.getElementById('tradeNumber').value);
+            let strategy = document.getElementById('strategy').value;
+            const customStrategy = document.getElementById('customStrategy').value;
+            const pair = document.getElementById('currencyPair').value;
+            const pnl = parseFloat(document.getElementById('pnlAmount').value);
+            const notes = document.getElementById('tradeNotes').value;
+            
+            // Validation
+            if (!date || !tradeNumber || !strategy || !pair || isNaN(pnl)) {
+                showToast('Please fill all required fields', 'error');
+                return false;
+            }
+            
+            // Check max 4 trades per day
+            const todayTrades = trades.filter(t => t.date === date);
+            if (todayTrades.length >= 4) {
+                showToast('Maximum 4 trades per day reached!', 'error');
+                return false;
+            }
+            
+            // Use custom strategy if provided
+            if (customStrategy && document.getElementById('customStrategy').style.display !== 'none') {
+                strategy = customStrategy;
+            }
+            
+            // Create trade object
+            const trade = {
+                id: Date.now(),
+                date,
+                tradeNumber,
+                pair,
+                strategy,
+                pnl,
+                notes: notes || 'No notes provided'
+            };
+            
+            // Add to trades array
+            trades.unshift(trade);
+            
+            // Save data
+            saveTrades();
+            
+            // Update UI
+            updateAccountBalanceDisplay();
+            updateRecentTrades();
+            updateAllTrades();
+            updateStats();
+            updateTradeLists();
+            
+            // Update charts
+            if (equityChart) {
+                equityChart.data = getEquityData();
+                equityChart.update();
+            }
+            
+            if (winRateChart) {
+                winRateChart.data = getWinRateData();
+                winRateChart.update();
+            }
+            
+            if (winLossChart) {
+                winLossChart.data = getWinLossData();
+                winLossChart.update();
+            }
+            
+            if (profitFactorChart) {
+                profitFactorChart.data = getProfitFactorData();
+                profitFactorChart.update();
+            }
+            
+            // Update calendar
+            updateCalendar();
+            
+            // Reset form
+            document.getElementById('pnlAmount').value = '';
+            document.getElementById('tradeNotes').value = '';
+            document.getElementById('tradeDate').value = new Date().toISOString().split('T')[0];
+            
+            showToast('Trade saved successfully!', 'success');
+            return true;
+        }
+
+        // Save and download trade
+        function saveAndDownloadTrade() {
+            const success = saveTrade();
+            if (success) {
+                // Download the latest trade as PDF
+                setTimeout(() => {
+                    if (trades.length > 0) {
+                        downloadTradePDF(trades[0]);
+                    }
+                }, 500);
+            }
+        }
+
+        // Save dream
+        function saveDream() {
+            const dreamInput = document.getElementById('dreamInput');
+            const content = dreamInput.value.trim();
+            
+            if (!content) {
+                showToast('Please write your dream first', 'error');
+                return;
+            }
+            
+            const dream = {
+                id: Date.now(),
+                date: new Date().toISOString().split('T')[0],
+                content: content
+            };
+            
+            dreams.unshift(dream);
+            saveDreams();
+            updateDreamsList();
+            
+            dreamInput.value = '';
+            showToast('Dream saved successfully!', 'success');
+        }
+
+        // Clear dream input
+        function clearDream() {
+            document.getElementById('dreamInput').value = '';
+        }
+
+        // Edit dream
+        function editDream(dreamId) {
+            const dream = dreams.find(d => d.id === dreamId);
+            if (!dream) return;
+            
+            const dreamInput = document.getElementById('dreamInput');
+            dreamInput.value = dream.content;
+            
+            // Remove the dream from list
+            dreams = dreams.filter(d => d.id !== dreamId);
+            saveDreams();
+            updateDreamsList();
+            
+            showToast('Dream loaded for editing', 'info');
+        }
+
+        // Delete dream
+        function deleteDream(dreamId) {
+            if (!confirm('Are you sure you want to delete this dream?')) return;
+            
+            dreams = dreams.filter(d => d.id !== dreamId);
+            saveDreams();
+            updateDreamsList();
+            
+            showToast('Dream deleted successfully!', 'success');
+        }
+
+        // Edit starting balance
+        function editStartingBalance() {
+            const startingBalanceElement = document.getElementById('startingBalance');
+            const startingBalanceInput = document.getElementById('startingBalanceInput');
+            const editButton = document.querySelector('.edit-starting-balance-btn');
+            const saveButton = document.getElementById('saveBalanceBtn');
+            const cancelButton = document.getElementById('cancelBalanceBtn');
+            
+            if (!startingBalanceElement || !startingBalanceInput) return;
+            
+            // Hide edit button, show input and action buttons
+            editButton.style.display = 'none';
+            startingBalanceElement.style.display = 'none';
+            startingBalanceInput.style.display = 'block';
+            saveButton.style.display = 'flex';
+            cancelButton.style.display = 'flex';
+            
+            // Set input value to current starting balance
+            startingBalanceInput.value = startingBalance;
+            
+            // Focus on input and select all text
+            setTimeout(() => {
+                startingBalanceInput.focus();
+                startingBalanceInput.select();
+            }, 100);
+        }
+
+        // Save starting balance
+        function saveStartingBalance() {
+            const startingBalanceInput = document.getElementById('startingBalanceInput');
+            const startingBalanceElement = document.getElementById('startingBalance');
+            const editButton = document.querySelector('.edit-starting-balance-btn');
+            const saveButton = document.getElementById('saveBalanceBtn');
+            const cancelButton = document.getElementById('cancelBalanceBtn');
+            
+            const newStartingBalance = parseFloat(startingBalanceInput.value);
+            
+            if (isNaN(newStartingBalance) || newStartingBalance <= 0) {
+                showToast('Please enter a valid starting balance (greater than 0)', 'error');
+                startingBalanceInput.focus();
+                return;
+            }
+            
+            if (newStartingBalance === startingBalance) {
+                // No change, just hide edit mode
+                hideEditMode();
+                return;
+            }
+            
+            // Update starting balance
+            startingBalance = newStartingBalance;
+            
+            // Save to localStorage
+            saveAccountBalance();
+            
+            // Update display
+            updateAccountBalanceDisplay();
+            
+            // Update charts
+            if (equityChart) {
+                equityChart.data = getEquityData();
+                equityChart.update();
+            }
+            
+            // Show success message
+            showToast(`Starting balance updated to ${formatCurrency(startingBalance)}`, 'success');
+            
+            // Hide edit mode
+            hideEditMode();
+        }
+
+        // Cancel starting balance edit
+        function cancelStartingBalanceEdit() {
+            const startingBalanceInput = document.getElementById('startingBalanceInput');
+            const startingBalanceElement = document.getElementById('startingBalance');
+            const editButton = document.querySelector('.edit-starting-balance-btn');
+            const saveButton = document.getElementById('saveBalanceBtn');
+            const cancelButton = document.getElementById('cancelBalanceBtn');
+            
+            // Reset input value
+            startingBalanceInput.value = startingBalance;
+            
+            // Hide edit mode
+            hideEditMode();
+        }
+
+        // Helper function to hide edit mode
+        function hideEditMode() {
+            const startingBalanceElement = document.getElementById('startingBalance');
+            const startingBalanceInput = document.getElementById('startingBalanceInput');
+            const editButton = document.querySelector('.edit-starting-balance-btn');
+            const saveButton = document.getElementById('saveBalanceBtn');
+            const cancelButton = document.getElementById('cancelBalanceBtn');
+            
+            editButton.style.display = 'flex';
+            startingBalanceElement.style.display = 'block';
+            startingBalanceInput.style.display = 'none';
+            saveButton.style.display = 'none';
+            cancelButton.style.display = 'none';
+        }
+
+        // Edit trade
+        function editTrade(tradeId) {
+            const tradeIndex = trades.findIndex(t => t.id === tradeId);
+            if (tradeIndex === -1) return;
+            
+            const trade = trades[tradeIndex];
+            
+            // Open edit modal
+            document.getElementById('editTradesModal').style.display = 'flex';
+            
+            // Populate edit form
+            const editList = document.getElementById('todayTradesEditList');
+            editList.innerHTML = `
+                <div class="edit-trade-form">
+                    <div class="form-group">
+                        <label>Trade #</label>
+                        <input type="number" id="editTradeNumber" class="form-input" value="${trade.tradeNumber}" min="1" max="4">
+                    </div>
+                    <div class="form-group">
+                        <label>Currency Pair</label>
+                        <input type="text" id="editPair" class="form-input" value="${trade.pair}">
+                    </div>
+                    <div class="form-group">
+                        <label>Strategy</label>
+                        <input type="text" id="editStrategy" class="form-input" value="${trade.strategy}">
+                    </div>
+                    <div class="form-group">
+                        <label>P&L ($)</label>
+                        <input type="number" id="editPnl" class="form-input" value="${trade.pnl}" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea id="editNotes" class="form-input">${trade.notes}</textarea>
+                    </div>
+                    <input type="hidden" id="editTradeId" value="${trade.id}">
+                </div>
+            `;
+        }
+
+        // Save edited trade
+        function saveEditedTrades() {
+            const tradeId = parseInt(document.getElementById('editTradeId').value);
+            const tradeIndex = trades.findIndex(t => t.id === tradeId);
+            
+            if (tradeIndex === -1) {
+                showToast('Trade not found', 'error');
+                return;
+            }
+            
+            // Get old P&L for balance adjustment
+            const oldPnl = trades[tradeIndex].pnl;
+            
+            // Update trade
+            trades[tradeIndex] = {
+                ...trades[tradeIndex],
+                tradeNumber: parseInt(document.getElementById('editTradeNumber').value),
+                pair: document.getElementById('editPair').value,
+                strategy: document.getElementById('editStrategy').value,
+                pnl: parseFloat(document.getElementById('editPnl').value),
+                notes: document.getElementById('editNotes').value
+            };
+            
+            // Save data
+            saveTrades();
+            
+            // Update UI
+            updateAccountBalanceDisplay();
+            updateRecentTrades();
+            updateAllTrades();
+            updateStats();
+            updateTradeLists();
+            
+            // Update charts
+            if (equityChart) {
+                equityChart.data = getEquityData();
+                equityChart.update();
+            }
+            
+            if (winRateChart) {
+                winRateChart.data = getWinRateData();
+                winRateChart.update();
+            }
+            
+            closeEditTradesModal();
+            showToast('Trade updated successfully!', 'success');
+        }
+
+        // Delete trade
+        function deleteTrade(tradeId) {
+            if (!confirm('Are you sure you want to delete this trade?')) return;
+            
+            const tradeIndex = trades.findIndex(t => t.id === tradeId);
+            if (tradeIndex === -1) return;
+            
+            // Remove trade
+            trades.splice(tradeIndex, 1);
+            
+            // Save data
+            saveTrades();
+            
+            // Update UI
+            updateAccountBalanceDisplay();
+            updateRecentTrades();
+            updateAllTrades();
+            updateStats();
+            updateTradeLists();
+            
+            // Update charts
+            if (equityChart) {
+                equityChart.data = getEquityData();
+                equityChart.update();
+            }
+            
+            if (winRateChart) {
+                winRateChart.data = getWinRateData();
+                winRateChart.update();
+            }
+            
+            // Update calendar
+            updateCalendar();
+            
+            showToast('Trade deleted successfully!', 'success');
+        }
+
+        // Edit today's trades
+        function editTodayTrades() {
+            const today = new Date().toISOString().split('T')[0];
+            const todayTrades = trades.filter(t => t.date === today);
+            
+            if (todayTrades.length === 0) {
+                showToast('No trades to edit today', 'warning');
+                return;
+            }
+            
+            // Open edit modal
+            document.getElementById('editTradesModal').style.display = 'flex';
+            
+            // Populate edit list
+            const editList = document.getElementById('todayTradesEditList');
+            editList.innerHTML = todayTrades.map(trade => `
+                <div class="edit-trade-item">
+                    <div class="trade-info">
+                        <strong>Trade ${trade.tradeNumber}</strong>
+                        <span>${trade.pair} - ${trade.strategy}</span>
+                        <span class="${trade.pnl >= 0 ? 'profit' : 'loss'}">${formatCurrencyWithSign(trade.pnl)}</span>
+                    </div>
+                    <div class="trade-actions">
+                        <button class="action-btn edit-btn" onclick="editTrade(${trade.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deleteTrade(${trade.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Close edit trades modal
+        function closeEditTradesModal() {
+            document.getElementById('editTradesModal').style.display = 'none';
+        }
+
+        // Show custom strategy input
+        function showCustomStrategy() {
+            const customStrategy = document.getElementById('customStrategy');
+            customStrategy.style.display = 'block';
+            customStrategy.focus();
+        }
+
+        // PDF Export Functions
+        function downloadTodayStats() {
+            const today = new Date().toISOString().split('T')[0];
+            const todayTrades = trades.filter(t => t.date === today);
+            
+            generatePDF({
+                title: `Today's Trading Stats - ${today}`,
+                content: generateTodayStatsHTML(todayTrades),
+                filename: `today-stats-${today}.pdf`
+            });
+        }
+
+        function downloadWeeklyStats() {
+            const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0];
+            const weeklyTrades = trades.filter(t => t.date >= weekAgo);
+            
+            generatePDF({
+                title: 'Weekly Trading Performance',
+                content: generateWeeklyStatsHTML(weeklyTrades),
+                filename: `weekly-stats-${new Date().toISOString().split('T')[0]}.pdf`
+            });
+        }
+
+        function downloadMonthlyStats() {
+            const monthAgo = new Date(Date.now() - 30 * 86400000).toISOString().split('T')[0];
+            const monthlyTrades = trades.filter(t => t.date >= monthAgo);
+            
+            generatePDF({
+                title: 'Monthly Trading Performance',
+                content: generateMonthlyStatsHTML(monthlyTrades),
+                filename: `monthly-stats-${new Date().toISOString().split('T')[0]}.pdf`
+            });
+        }
+
+        function downloadTradePDF(trade) {
+            generatePDF({
+                title: `Trade Details - ${formatDate(trade.date)}`,
+                content: generateTradeHTML(trade),
+                filename: `trade-${trade.id}-${trade.date}.pdf`
+            });
+        }
+
+        function exportJournalPDF() {
+            generatePDF({
+                title: 'Trading Journal - Complete History',
+                content: generateJournalHTML(),
+                filename: `trading-journal-${new Date().toISOString().split('T')[0]}.pdf`
+            });
+        }
+
+        function exportAnalyticsPDF() {
+            generatePDF({
+                title: 'Trading Analytics Report',
+                content: generateAnalyticsHTML(),
+                filename: `analytics-report-${new Date().toISOString().split('T')[0]}.pdf`
+            });
+        }
+
+        function exportNotebookPDF() {
+            generatePDF({
+                title: 'Trading Dreams Notebook',
+                content: generateNotebookHTML(),
+                filename: `dreams-notebook-${new Date().toISOString().split('T')[0]}.pdf`
+            });
+        }
+
+        function exportAllDataPDF() {
+            generatePDF({
+                title: 'Complete Trading Data Export',
+                content: generateCompleteReportHTML(),
+                filename: `complete-trading-data-${new Date().toISOString().split('T')[0]}.pdf`
+            });
+        }
+
+        function downloadChartAsPDF(canvasId, chartName) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            
+            const image = canvas.toDataURL('image/png', 1.0);
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('landscape');
+            
+            pdf.setFontSize(20);
+            pdf.text(chartName, 20, 20);
+            pdf.setFontSize(12);
+            pdf.text(`Generated: ${new Date().toLocaleDateString()}`, 20, 30);
+            
+            const imgWidth = 250;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            
+            pdf.addImage(image, 'PNG', 20, 40, imgWidth, imgHeight);
+            pdf.save(`${chartName.toLowerCase().replace(/\s+/g, '-')}-${new Date().toISOString().split('T')[0]}.pdf`);
+            
+            showToast(`${chartName} downloaded as PDF`, 'success');
+        }
+
+        // Generate PDF content
+        function generatePDF({ title, content, filename }) {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF();
+            
+            // Add title
+            pdf.setFontSize(20);
+            pdf.text(title, 20, 20);
+            
+            // Add generation date
+            pdf.setFontSize(12);
+            pdf.text(`Generated: ${new Date().toLocaleDateString()}`, 20, 30);
+            
+            // Add content
+            pdf.setFontSize(10);
+            const lines = pdf.splitTextToSize(content, 170);
+            pdf.text(lines, 20, 40);
+            
+            // Save PDF
+            pdf.save(filename);
+            showToast('PDF downloaded successfully!', 'success');
+        }
+
+        // HTML generators for PDF content
+        function generateTodayStatsHTML(todayTrades) {
+            const todayPnl = todayTrades.reduce((sum, t) => sum + t.pnl, 0);
+            
+            return `
+                Date: ${new Date().toLocaleDateString()}
+                Account Balance: ${formatCurrency(accountBalance)}
+                Starting Balance: ${formatCurrency(startingBalance)}
+                Today's P&L: ${formatCurrencyWithSign(todayPnl)}
+                Today's Trades: ${todayTrades.length}/4
+                
+                TRADES TODAY:
+                ${todayTrades.map(t => `
+                - Trade ${t.tradeNumber}: ${t.pair} | ${t.strategy} | P&L: ${formatCurrencyWithSign(t.pnl)} | Notes: ${t.notes}
+                `).join('')}
+            `;
+        }
+
+        function generateTradeHTML(trade) {
+            return `
+                TRADE DETAILS:
+                Date: ${formatDate(trade.date)}
+                Trade Number: ${trade.tradeNumber}
+                Currency Pair: ${trade.pair}
+                Strategy: ${trade.strategy}
+                P&L: ${formatCurrencyWithSign(trade.pnl)}
+                Notes: ${trade.notes}
+                
+                ACCOUNT INFO:
+                Current Balance: ${formatCurrency(accountBalance)}
+                Starting Balance: ${formatCurrency(startingBalance)}
+                Total Growth: ${formatCurrency(accountBalance - startingBalance)}
+            `;
+        }
+
+        // Utility functions
+        function formatCurrency(amount) {
+            if (amount === null || amount === undefined) return '$0.00';
+            
+            return `$${Math.abs(amount).toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            })}`;
+        }
+
+        function formatCurrencyWithSign(amount) {
+            if (amount === null || amount === undefined) return '$0.00';
+            
+            const sign = amount >= 0 ? '+' : '-';
+            return `${sign}$${Math.abs(amount).toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            })}`;
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        // Toast notification
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            container.appendChild(toast);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                toast.style.animation = 'slideIn 0.3s ease reverse';
+                setTimeout(() => {
+                    if (toast.parentNode === container) {
+                        container.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // Modal functions
+        function showModal(content) {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'flex';
+            modal.innerHTML = content;
+            document.body.appendChild(modal);
+        }
+
+        function closeModal() {
+            const modal = document.querySelector('.modal');
+            if (modal) {
+                modal.style.display = 'none';
+                setTimeout(() => {
+                    if (modal.parentNode) {
+                        modal.parentNode.removeChild(modal);
+                    }
+                }, 300);
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Menu button
+            const menuBtn = document.getElementById('menuBtn');
+            const sidebar = document.getElementById('sidebar');
+            
+            if (menuBtn && sidebar) {
+                menuBtn.addEventListener('click', () => {
+                    sidebar.classList.toggle('active');
+                });
+            }
+            
+            // Navigation items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all items
+                    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                    
+                    // Add active class to clicked item
+                    this.classList.add('active');
+                    
+                    // Hide all pages
+                    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+                    
+                    // Show selected page
+                    const pageId = this.getAttribute('data-page');
+                    document.getElementById(pageId).classList.add('active');
+                    
+                    // Close sidebar on mobile
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.remove('active');
+                    }
+                    
+                    // Update charts on analytics page
+                    if (pageId === 'analytics') {
+                        setTimeout(() => {
+                            if (winLossChart) winLossChart.update();
+                            if (profitFactorChart) profitFactorChart.update();
+                        }, 100);
+                    }
+                });
+            });
+            
+            // Chart period buttons
+            document.querySelectorAll('.period-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    // Update chart based on period
+                    const period = this.getAttribute('data-period');
+                    updateChartPeriod(period);
+                });
+            });
+            
+            // Logout button
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function() {
+                    if (confirm('Are you sure you want to logout?')) {
+                        sessionStorage.removeItem('fxTaeAuthenticated');
+                        window.location.href = 'index.html';
+                    }
+                });
+            }
+            
+            // Edit balance button
+            const editBalanceBtn = document.getElementById('editBalanceBtn');
+            if (editBalanceBtn) {
+                editBalanceBtn.addEventListener('click', openEditBalanceModal);
+            }
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', function(e) {
+                const modals = document.querySelectorAll('.modal');
+                modals.forEach(modal => {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // Update chart period
+        function updateChartPeriod(period) {
+            showToast(`Chart period set to ${period}`, 'info');
+            // Here you would update the chart data based on the selected period
+        }
+
+        // Open edit balance modal
+        function openEditBalanceModal() {
+            document.getElementById('editBalanceModal').style.display = 'flex';
+            document.getElementById('newBalanceInput').value = accountBalance;
+        }
+
+        // Close edit balance modal
+        function closeEditBalanceModal() {
+            document.getElementById('editBalanceModal').style.display = 'none';
+        }
+
+        // Confirm balance update
+        function confirmBalanceUpdate() {
+            const newBalance = parseFloat(document.getElementById('newBalanceInput').value);
+            
+            if (isNaN(newBalance) || newBalance <= 0) {
+                showToast('Please enter a valid balance', 'error');
+                return;
+            }
+            
+            // Adjust starting balance instead of current balance
+            startingBalance = newBalance;
+            saveAccountBalance();
+            updateAccountBalanceDisplay();
+            
+            // Update charts
+            if (equityChart) {
+                equityChart.data = getEquityData();
+                equityChart.update();
+            }
+            
+            closeEditBalanceModal();
+            showToast('Starting balance updated successfully!', 'success');
+        }
+
+        // Theme switching
+        function setTheme(theme) {
+            document.body.classList.toggle('dark-theme', theme === 'dark');
+            localStorage.setItem('fxTaeTheme', theme);
+            
+            // Update theme buttons
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if ((theme === 'light' && btn.textContent.includes('Light')) || 
+                    (theme === 'dark' && btn.textContent.includes('Dark'))) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            showToast(`Switched to ${theme} theme`, 'success');
+        }
+
+        // Clear all data
+        function clearAllData() {
+            if (confirm('WARNING: This will delete ALL your trading data, dreams, and reset your account. This action cannot be undone. Are you sure?')) {
+                localStorage.removeItem('fxTaeTrades');
+                localStorage.removeItem('fxTaeDreams');
+                localStorage.removeItem('fxTaeAccountBalance');
+                localStorage.removeItem('fxTaeStartingBalance');
+                
+                trades = [];
+                dreams = [];
+                accountBalance = 10000;
+                startingBalance = 10000;
+                
+                saveTrades();
+                saveDreams();
+                saveAccountBalance();
+                
+                updateAccountBalanceDisplay();
+                updateRecentTrades();
+                updateAllTrades();
+                updateDreamsList();
+                updateStats();
+                updateTradeLists();
+                updateCalendar();
+                
+                if (equityChart) {
+                    equityChart.data = getEquityData();
+                    equityChart.update();
+                }
+                
+                if (winRateChart) {
+                    winRateChart.data = getWinRateData();
+                    winRateChart.update();
+                }
+                
+                showToast('All data cleared successfully!', 'success');
+            }
+        }
+
+        // Export dashboard
+        document.getElementById('exportDashboard').addEventListener('click', function() {
+            generatePDF({
+                title: 'Professional Trading Dashboard Report',
+                content: generateDashboardReportHTML(),
+                filename: `dashboard-report-${new Date().toISOString().split('T')[0]}.pdf`
+            });
+        });
+
+        // Initialize theme
+        const savedTheme = localStorage.getItem('fxTaeTheme') || 'light';
+        setTheme(savedTheme);
+
+        // Set default date for trade entry
+        document.getElementById('tradeDate').value = new Date().toISOString().split('T')[0];
+    </script>
+</body>
+</html>
