@@ -120,13 +120,9 @@
                     <div class="stat-card purple-card">
                         <div class="stat-header">
                             <h3><i class="fas fa-exchange-alt"></i> Today's Trades</h3>
-                            <div class="stat-actions">
+                            <div class="stat-actions"
                                 <button class="edit-trades-btn" onclick="editTodayTrades()">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="download-btn" onclick="downloadTrades()">
-                                    <i class="fas fa-download"></i>
-                                </button>
+                                    <i class="fas fa-edit"></i> 
                             </div>
                         </div>
                         <div class="stat-value" id="todayTradesCount">0/4</div>
@@ -141,9 +137,6 @@
                     <div class="stat-card green-card">
                         <div class="stat-header">
                             <h3><i class="fas fa-calendar-week"></i> Weekly Performance</h3>
-                            <button class="download-btn" onclick="downloadWeeklyStats()">
-                                <i class="fas fa-download"></i>
-                            </button>
                         </div>
                         <div class="stat-value" id="weeklyPnl">$0.00</div>
                         <div class="stat-details" id="weeklyTradesList">No weekly trades</div>
@@ -153,9 +146,6 @@
                     <div class="stat-card orange-card">
                         <div class="stat-header">
                             <h3><i class="fas fa-calendar-alt"></i> Monthly Performance</h3>
-                            <button class="download-btn" onclick="downloadMonthlyStats()">
-                                <i class="fas fa-download"></i>
-                            </button>
                         </div>
                         <div class="stat-value" id="monthlyPnl">$0.00</div>
                         <div class="stat-details" id="monthlyTradesList">No monthly trades</div>
