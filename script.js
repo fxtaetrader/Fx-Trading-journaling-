@@ -227,77 +227,81 @@ function showToast(message, type = 'info') {
     }, 3000);
 }
 
-// ===== DATA MANAGEMENT FUNCTIONS =====
-
-// Load trades from localStorage
-function loadTrades() {
-    try {
-        const savedTrades = localStorage.getItem('fxTaeTrades');
-        trades = savedTrades ? JSON.parse(savedTrades) : [];
-        console.log(`Loaded ${trades.length} trades from storage`);
-    } catch (error) {
-        console.error('Error loading trades:', error);
-        trades = [];
-    }
-}
-
-// Load dreams from localStorage
-function loadDreams() {
-    try {
-        const savedDreams = localStorage.getItem('fxTaeDreams');
-        dreams = savedDreams ? JSON.parse(savedDreams) : [];
-        console.log(`Loaded ${dreams.length} dreams from storage`);
-    } catch (error) {
-        console.error('Error loading dreams:', error);
-        dreams = [];
-    }
-}
-
-// Load account balance from localStorage
-function loadAccountBalance() {
-    try {
-        const savedBalance = localStorage.getItem('fxTaeAccountBalance');
-        const savedStartingBalance = localStorage.getItem('fxTaeStartingBalance');
+tFactorChart.update();
+        }
         
-        if (savedBalance) accountBalance = parseFloat(savedBalance);
-        if (savedStartingBalance) startingBalance = parseFloat(savedStartingBalance);
+        // Update calendar
+        updateCalendar();
+        
+        // Reset form
+        const pnlInput = document.getElementById('pnlAmount');
+        const notesInput = document.getElementById('tradeNotes');
+        
+        if (pnlInput) pnlInput.value = '';
+        if (notesInput) notesInput.value = '';
+        
+        showToast('Trade saved successfully!', 'success');
+        return true;
     } catch (error) {
-        console.error('Error loading account balance:', error);
-        // Use defaults
-        accountBalance = 10000;
-        startingBalance = 10000;
+        console.error('Error saving trade:', error);
+        showToast('Error saving trade', 'error');
+        return false;
     }
 }
 
-// Save trades to localStorage
-function saveTrades() {
-    try {
-        localStorage.setItem('fxTaeTrades', JSON.stringify(trades));
-    } catch (error) {
-        console.error('Error saving trades:', error);
-        showToast('Error saving trades data', 'error');
+// Save and download trade
+function saveAndDownloadTrade() {
+    const success = saveTrade();
+    if (success) {
+        // Download the latest trade as PDF
+        setTimeout(() => {
+            if (trades.length > 0) {
+                downloadTradePDF(trades[0]);
+            }
+        }, 500);
     }
 }
 
-// Save dreams to localStorage
-function saveDreams() {
-    try {
-        localStorage.setItem('fxTaeDreams', JSON.stringify(dreams));
-    } catch (error) {
-        console.error('Error saving dreams:', error);
-        showToast('Error saving dreams data', 'error');
+// Edit trade
+function editTrade(tradeId) {
+    const tradeIndex = trades.findIndex(t => t.id === tradeId);
+    if (tradeIndex === -1) {
+        showToast('Trade not found', 'error');
+        return;
     }
-}
-
-// Save account balance to localStorage
-function saveAccountBalance() {
-    try {
-        localStorage.setItem('fxTaeAccountBalance', accountBalance.toString());
-        localStorage.setItem('fxTaeStartingBalance', startingBalance.toString());
-    } catch (error) {
-        console.error('Error saving account balance:', error);
-        showToast('Error saving account balance', 'error');
-    }
+    
+    const trade = trades[tradeIndex];
+    
+    // Open edit modal
+    document.getElementById('editTradesModal').style.display = 'flex';
+    
+    // Populate edit form
+    const editList = document.getElementById('todayTradesEditList');
+    editList.innerHTML = `
+        <div class="edit-trade-form">
+            <div class="form-group">
+                <label>Trade #</label>
+                <input type="number" id="editTradeNumber" class="form-input" value="${trade.tradeNumber}" min="1" max="4">
+            </div>
+            <div class="form-group">
+                <label>Currency Pair</label>
+                <input type="text" id="editPair" class="form-input" value="${trade.pair}">
+            </div>
+            <div class="form-group">
+                <label>Strategy</label>
+                <input type="text" id="editStrategy" class="form-input" value="${trade.strategy}">
+            </div>
+            <div class="form-group">
+                <label>P&L ($)</label>
+                <input type="number" id="editPnl" class="form-input" value="${trade.pnl}" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Notes</label>
+                <textarea id="editNotes" class="form-input">${trade.notes}</textarea>
+            </div>
+            <input type="hidden" id="editTradeId" value="${trade.id}">
+        </div>
+    `;
 }
 
 // ===== DASHBOARD INITIALIZATION =====
@@ -342,6 +346,15 @@ function initializeApp() {
         const tradeDateInput = document.getElementById('tradeDate');
         if (tradeDateInput) {
             tradeDateInput.value = new Date().toISOString().split('T')[0];
+        }
+        
+        // Set default time for trade entry
+        const tradeTimeInput = document.getElementById('tradeTime');
+        if (tradeTimeInput) {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            tradeTimeInput.value = `${hours}:${minutes}`;
         }
         
         // Load saved theme
@@ -429,7 +442,7 @@ function updateRecentTrades() {
     try {
         // Get 5 most recent trades
         const recentTrades = [...trades]
-            .sort((a, b) => new Date(b.date) - new Date(a.date))
+            .sort((a, b) => new Date(b.date + ' ' + b.time) - new Date(a.date + ' ' + a.time))
             .slice(0, 5);
         
         if (recentTrades.length === 0) {
@@ -446,7 +459,7 @@ function updateRecentTrades() {
         
         tableBody.innerHTML = recentTrades.map(trade => `
             <tr>
-                <td>${formatDate(trade.date)}</td>
+                <td>${formatDateTime(trade.date, trade.time)}</td>
                 <td>${trade.tradeNumber}</td>
                 <td>${trade.pair}</td>
                 <td>${trade.strategy}</td>
@@ -482,7 +495,7 @@ function updateAllTrades() {
     
     try {
         // Sort by date (newest first)
-        const allTrades = [...trades].sort((a, b) => new Date(b.date) - new Date(a.date));
+        const allTrades = [...trades].sort((a, b) => new Date(b.date + ' ' + b.time) - new Date(a.date + ' ' + a.time));
         
         if (allTrades.length === 0) {
             tableBody.innerHTML = `
@@ -498,7 +511,7 @@ function updateAllTrades() {
         
         tableBody.innerHTML = allTrades.map(trade => `
             <tr>
-                <td>${formatDate(trade.date)}</td>
+                <td>${formatDateTime(trade.date, trade.time)}</td>
                 <td>${trade.tradeNumber}</td>
                 <td>${trade.pair}</td>
                 <td>${trade.strategy}</td>
@@ -641,7 +654,7 @@ function updateTradeList(elementId, tradeList) {
         
         const list = tradeList.slice(0, 3).map(trade => `
             <div class="trade-item">
-                <span>${formatDate(trade.date)}</span>
+                <span>${formatDateTime(trade.date, trade.time)}</span>
                 <span>${trade.pair}</span>
                 <span class="${trade.pnl >= 0 ? 'profit' : 'loss'}">${formatCurrencyWithSign(trade.pnl)}</span>
             </div>
@@ -710,7 +723,7 @@ function initializeCharts() {
         // Equity Chart
         const equityCtx = document.getElementById('equityChart');
         if (equityCtx) {
-            const equityData = getEquityData();
+            const equityData = getEquityData('7d'); // Default to 7 days
             
             equityChart = new Chart(equityCtx, {
                 type: 'line',
@@ -719,13 +732,19 @@ function initializeCharts() {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { display: false },
+                        legend: {
+                            display: false
+                        },
                         tooltip: {
                             mode: 'index',
                             intersect: false,
                             callbacks: {
                                 label: function(context) {
                                     return `Balance: $${context.parsed.y.toLocaleString()}`;
+                                },
+                                title: function(context) {
+                                    if (context[0].dataIndex === 0) return 'Starting Balance';
+                                    return context[0].label;
                                 }
                             }
                         }
@@ -738,14 +757,27 @@ function initializeCharts() {
                                     return '$' + value.toLocaleString();
                                 }
                             },
-                            grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            title: {
+                                display: true,
+                                text: 'Account Balance ($)'
+                            }
                         },
                         x: {
-                            grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            title: {
+                                display: true,
+                                text: 'Date & Time'
+                            }
                         }
                     }
                 }
             });
+            
             console.log('Equity chart created');
         }
         
@@ -807,21 +839,68 @@ function initializeCharts() {
     }
 }
 
-// Get equity data for chart
-function getEquityData() {
+// Get equity data for chart based on period
+function getEquityData(period = '7d') {
+    let filteredTrades = [...trades];
+    const now = new Date();
+    
+    // Filter trades based on period
+    switch(period.toLowerCase()) {
+        case '1m': // 1 month
+            const oneMonthAgo = new Date(now.setMonth(now.getMonth() - 1));
+            filteredTrades = trades.filter(t => new Date(t.date) >= oneMonthAgo);
+            break;
+        case '12m': // 12 months
+            const twelveMonthsAgo = new Date(now.setMonth(now.getMonth() - 12));
+            filteredTrades = trades.filter(t => new Date(t.date) >= twelveMonthsAgo);
+            break;
+        case '7d': // 7 days (default)
+        default:
+            const sevenDaysAgo = new Date(now.setDate(now.getDate() - 7));
+            filteredTrades = trades.filter(t => new Date(t.date) >= sevenDaysAgo);
+            break;
+    }
+    
+    // Sort trades by date and time
+    filteredTrades.sort((a, b) => new Date(a.date + ' ' + a.time) - new Date(b.date + ' ' + b.time));
+    
     // Start with initial balance
     let balance = startingBalance;
     const data = [balance];
-    const labels = ['Start'];
+    const labels = ['Starting Balance'];
     
-    // Sort trades by date
-    const sortedTrades = [...trades].sort((a, b) => new Date(a.date) - new Date(b.date));
-    
-    sortedTrades.forEach((trade, index) => {
+    // Process each trade
+    filteredTrades.forEach((trade, index) => {
         balance += trade.pnl;
         data.push(balance);
-        labels.push(`Trade ${index + 1}`);
+        
+        // Format label with date and time
+        const dateObj = new Date(trade.date);
+        const formattedDate = dateObj.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric'
+        });
+        
+        // Add time to label
+        const label = `${formattedDate} ${trade.time}`;
+        labels.push(label);
     });
+    
+    // If no trades in period, just show starting balance
+    if (filteredTrades.length === 0) {
+        return {
+            labels: ['Starting Balance'],
+            datasets: [{
+                label: 'Account Balance',
+                data: [startingBalance],
+                borderColor: '#3b82f6',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4
+            }]
+        };
+    }
     
     return {
         labels: labels,
@@ -1023,7 +1102,7 @@ function viewDayTrades(dateStr) {
     
     let tradesHTML = dayTrades.map(trade => `
         <div class="day-trade-item">
-            <strong>Trade ${trade.tradeNumber}</strong>
+            <strong>Trade ${trade.tradeNumber} (${trade.time})</strong>
             <span>${trade.pair} - ${trade.strategy}</span>
             <span class="${trade.pnl >= 0 ? 'profit' : 'loss'}">${formatCurrencyWithSign(trade.pnl)}</span>
         </div>
@@ -1063,6 +1142,7 @@ function viewDayTrades(dateStr) {
 function saveTrade() {
     try {
         const date = document.getElementById('tradeDate')?.value;
+        const time = document.getElementById('tradeTime')?.value;
         const tradeNumber = parseInt(document.getElementById('tradeNumber')?.value);
         let strategy = document.getElementById('strategy')?.value;
         const customStrategy = document.getElementById('customStrategy')?.value;
@@ -1071,7 +1151,7 @@ function saveTrade() {
         const notes = document.getElementById('tradeNotes')?.value;
         
         // Validation
-        if (!date || !tradeNumber || !strategy || !pair || isNaN(pnl)) {
+        if (!date || !time || !tradeNumber || !strategy || !pair || isNaN(pnl)) {
             showToast('Please fill all required fields', 'error');
             return false;
         }
@@ -1092,6 +1172,7 @@ function saveTrade() {
         const trade = {
             id: Date.now(),
             date,
+            time,
             tradeNumber,
             pair,
             strategy,
@@ -1114,7 +1195,9 @@ function saveTrade() {
         
         // Update charts
         if (equityChart) {
-            equityChart.data = getEquityData();
+            const activePeriodBtn = document.querySelector('.period-btn.active');
+            const period = activePeriodBtn ? activePeriodBtn.getAttribute('data-period') : '7d';
+            equityChart.data = getEquityData(period);
             equityChart.update();
         }
         
@@ -1199,6 +1282,10 @@ function editTrade(tradeId) {
                 <input type="number" id="editPnl" class="form-input" value="${trade.pnl}" step="0.01">
             </div>
             <div class="form-group">
+                <label>Time</label>
+                <input type="time" id="editTime" class="form-input" value="${trade.time}">
+            </div>
+            <div class="form-group">
                 <label>Notes</label>
                 <textarea id="editNotes" class="form-input">${trade.notes}</textarea>
             </div>
@@ -1225,6 +1312,7 @@ function saveEditedTrades() {
             pair: document.getElementById('editPair').value,
             strategy: document.getElementById('editStrategy').value,
             pnl: parseFloat(document.getElementById('editPnl').value),
+            time: document.getElementById('editTime').value,
             notes: document.getElementById('editNotes').value
         };
         
@@ -1240,7 +1328,9 @@ function saveEditedTrades() {
         
         // Update charts
         if (equityChart) {
-            equityChart.data = getEquityData();
+            const activePeriodBtn = document.querySelector('.period-btn.active');
+            const period = activePeriodBtn ? activePeriodBtn.getAttribute('data-period') : '7d';
+            equityChart.data = getEquityData(period);
             equityChart.update();
         }
         
@@ -1280,7 +1370,9 @@ function deleteTrade(tradeId) {
         
         // Update charts
         if (equityChart) {
-            equityChart.data = getEquityData();
+            const activePeriodBtn = document.querySelector('.period-btn.active');
+            const period = activePeriodBtn ? activePeriodBtn.getAttribute('data-period') : '7d';
+            equityChart.data = getEquityData(period);
             equityChart.update();
         }
         
@@ -1317,7 +1409,7 @@ function editTodayTrades() {
     editList.innerHTML = todayTrades.map(trade => `
         <div class="edit-trade-item">
             <div class="trade-info">
-                <strong>Trade ${trade.tradeNumber}</strong>
+                <strong>Trade ${trade.tradeNumber} (${trade.time})</strong>
                 <span>${trade.pair} - ${trade.strategy}</span>
                 <span class="${trade.pnl >= 0 ? 'profit' : 'loss'}">${formatCurrencyWithSign(trade.pnl)}</span>
             </div>
@@ -1434,12 +1526,14 @@ function editStartingBalance() {
     const saveButton = document.getElementById('saveBalanceBtn');
     const cancelButton = document.getElementById('cancelBalanceBtn');
     
+    if (!startingBalanceElement || !startingBalanceInput) return;
+    
     // Hide edit button, show input and action buttons
-    editButton.style.display = 'none';
+    if (editButton) editButton.style.display = 'none';
     startingBalanceElement.style.display = 'none';
     startingBalanceInput.style.display = 'block';
-    saveButton.style.display = 'flex';
-    cancelButton.style.display = 'flex';
+    if (saveButton) saveButton.style.display = 'flex';
+    if (cancelButton) cancelButton.style.display = 'flex';
     
     // Set input value to current starting balance
     startingBalanceInput.value = startingBalance;
@@ -1454,21 +1548,11 @@ function editStartingBalance() {
 // Save starting balance
 function saveStartingBalance() {
     const startingBalanceInput = document.getElementById('startingBalanceInput');
-    const startingBalanceElement = document.getElementById('startingBalance');
-    const editButton = document.querySelector('.edit-starting-balance-btn');
-    const saveButton = document.getElementById('saveBalanceBtn');
-    const cancelButton = document.getElementById('cancelBalanceBtn');
-    
     const newStartingBalance = parseFloat(startingBalanceInput.value);
     
     if (isNaN(newStartingBalance) || newStartingBalance <= 0) {
         showToast('Please enter a valid starting balance (greater than 0)', 'error');
         startingBalanceInput.focus();
-        return;
-    }
-    
-    if (newStartingBalance === startingBalance) {
-        hideEditMode();
         return;
     }
     
@@ -1483,7 +1567,9 @@ function saveStartingBalance() {
     
     // Update charts
     if (equityChart) {
-        equityChart.data = getEquityData();
+        const activePeriodBtn = document.querySelector('.period-btn.active');
+        const period = activePeriodBtn ? activePeriodBtn.getAttribute('data-period') : '7d';
+        equityChart.data = getEquityData(period);
         equityChart.update();
     }
     
@@ -1496,6 +1582,16 @@ function saveStartingBalance() {
 
 // Cancel starting balance edit
 function cancelStartingBalanceEdit() {
+    const startingBalanceInput = document.getElementById('startingBalanceInput');
+    const startingBalanceElement = document.getElementById('startingBalance');
+    const editButton = document.querySelector('.edit-starting-balance-btn');
+    const saveButton = document.getElementById('saveBalanceBtn');
+    const cancelButton = document.getElementById('cancelBalanceBtn');
+    
+    // Reset input value
+    if (startingBalanceInput) startingBalanceInput.value = startingBalance;
+    
+    // Hide edit mode
     hideEditMode();
 }
 
@@ -1507,13 +1603,12 @@ function hideEditMode() {
     const saveButton = document.getElementById('saveBalanceBtn');
     const cancelButton = document.getElementById('cancelBalanceBtn');
     
-    editButton.style.display = 'flex';
-    startingBalanceElement.style.display = 'block';
-    startingBalanceInput.style.display = 'none';
-    saveButton.style.display = 'none';
-    cancelButton.style.display = 'none';
+    if (editButton) editButton.style.display = 'flex';
+    if (startingBalanceElement) startingBalanceElement.style.display = 'block';
+    if (startingBalanceInput) startingBalanceInput.style.display = 'none';
+    if (saveButton) saveButton.style.display = 'none';
+    if (cancelButton) cancelButton.style.display = 'none';
 }
-
 
 // Open edit balance modal
 function openEditBalanceModal() {
@@ -1548,7 +1643,9 @@ function confirmBalanceUpdate() {
         
         // Update charts
         if (equityChart) {
-            equityChart.data = getEquityData();
+            const activePeriodBtn = document.querySelector('.period-btn.active');
+            const period = activePeriodBtn ? activePeriodBtn.getAttribute('data-period') : '7d';
+            equityChart.data = getEquityData(period);
             equityChart.update();
         }
         
